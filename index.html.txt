@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>猜數字</title>
+</head>
+<body style="text-align:center; font-family:Arial;">
+
+    <h1>🎮 猜數字遊戲</h1>
+
+    <p>{{ message }}</p>
+
+    <form method="POST">
+        <input type="number" name="guess" required>
+        <button type="submit">猜</button>
+    </form>
+
+</body>
+</html>
