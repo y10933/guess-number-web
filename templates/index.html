@@ -10,7 +10,7 @@
         body {
             margin: 0;
             font-family: Arial;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            background: linear-gradient(135deg, #141e30, #243b55);
             color: white;
             display: flex;
             justify-content: center;
@@ -25,6 +25,7 @@
             border-radius: 20px;
             text-align: center;
             backdrop-filter: blur(10px);
+            transition: 0.3s;
         }
 
         input, select {
@@ -45,69 +46,98 @@
             background: #00c6ff;
             color: white;
             cursor: pointer;
+            transition: 0.2s;
         }
 
         button:hover {
             background: #0072ff;
+            transform: scale(1.05);
         }
 
-        .box {
-            margin-top: 15px;
+        /* 🎉 猜對動畫 */
+        .win {
+            animation: winFlash 0.6s ease-in-out;
         }
 
-        .list {
-            text-align: left;
-            font-size: 14px;
-            margin-top: 10px;
+        @keyframes winFlash {
+            0% { transform: scale(1); background: rgba(0,255,0,0.1); }
+            50% { transform: scale(1.1); background: rgba(0,255,0,0.4); }
+            100% { transform: scale(1); }
+        }
+
+        /* ❌ 猜錯動畫 */
+        .shake {
+            animation: shake 0.3s;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
         }
     </style>
 </head>
 
 <body>
 
-<div class="app">
+<div class="app" id="appBox">
 
     <h2>🎮 猜數字 APP</h2>
 
-    <p>{{ message }}</p>
+    <p id="msg">{{ message }}</p>
 
-    <!-- 難度 -->
-    <form method="POST">
+    <form method="POST" onsubmit="playClick()">
         <select name="level">
-            <option value="50" {% if level==50 %}selected{% endif %}>簡單 (1~50)</option>
-            <option value="100" {% if level==100 %}selected{% endif %}>普通 (1~100)</option>
-            <option value="500" {% if level==500 %}selected{% endif %}>困難 (1~500)</option>
+            <option value="50" {% if level==50 %}selected{% endif %}>簡單</option>
+            <option value="100" {% if level==100 %}selected{% endif %}>普通</option>
+            <option value="500" {% if level==500 %}selected{% endif %}>困難</option>
         </select>
+
         <button type="submit">切換難度</button>
     </form>
 
-    <!-- 猜數字 -->
-    <form method="POST" class="box">
+    <form method="POST" onsubmit="playClick()">
         <input type="number" name="guess" placeholder="輸入數字" required>
         <button type="submit">猜！</button>
     </form>
 
-    <!-- 排行榜 -->
-    <div class="list">
-        🏆 最佳紀錄：
-        <ul>
-            {% for r in rank %}
-                <li>{{ r }} 次</li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <!-- 🔥 每局猜測紀錄 -->
-    <div class="list">
-        📊 歷史猜測次數：
-        <ul>
-            {% for h in history %}
-                <li>{{ h }} 次</li>
-            {% endfor %}
-        </ul>
-    </div>
-
 </div>
+
+<!-- 🔊 音效 -->
+<audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio>
+<audio id="winSound" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
+
+<script>
+    const msg = document.getElementById("msg");
+    const app = document.getElementById("appBox");
+
+    // 點擊音效
+    function playClick() {
+        document.getElementById("clickSound").play();
+    }
+
+    // 判斷訊息做動畫
+    window.onload = function() {
+
+        let text = msg.innerText;
+
+        if (text.includes("正確")) {
+            app.classList.add("win");
+            document.getElementById("winSound").play();
+        }
+
+        if (text.includes("太大") || text.includes("太小")) {
+            app.classList.add("shake");
+        }
+
+        setTimeout(() => {
+            app.classList.remove("win");
+            app.classList.remove("shake");
+        }, 800);
+    }
+</script>
 
 </body>
 </html>
