@@ -9,69 +9,56 @@
     <style>
         body {
             margin: 0;
-            font-family: "Arial";
+            font-family: Arial;
             background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: white;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            color: white;
         }
 
         .app {
-            width: 320px;
+            width: 340px;
             background: rgba(255,255,255,0.08);
-            border-radius: 25px;
-            padding: 25px;
-            box-shadow: 0 0 25px rgba(0,0,0,0.5);
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
             backdrop-filter: blur(10px);
-            text-align: center;
         }
 
-        .title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        .msg {
-            font-size: 18px;
-            margin: 15px 0;
-            min-height: 40px;
-        }
-
-        input {
+        input, select {
             width: 80%;
-            padding: 12px;
-            border-radius: 12px;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 10px;
             border: none;
-            outline: none;
             text-align: center;
-            font-size: 16px;
         }
 
         button {
-            margin-top: 15px;
             width: 85%;
-            padding: 12px;
+            margin-top: 10px;
+            padding: 10px;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             background: #00c6ff;
             color: white;
-            font-size: 16px;
             cursor: pointer;
-            transition: 0.2s;
         }
 
         button:hover {
             background: #0072ff;
-            transform: scale(1.05);
         }
 
-        .footer {
+        .box {
             margin-top: 15px;
-            font-size: 12px;
-            opacity: 0.6;
+        }
+
+        .list {
+            text-align: left;
+            font-size: 14px;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -80,18 +67,44 @@
 
 <div class="app">
 
-    <div class="title">🎮 猜數字 APP</div>
+    <h2>🎮 猜數字 APP</h2>
 
-    <div class="msg">{{ message }}</div>
+    <p>{{ message }}</p>
 
+    <!-- 難度 -->
     <form method="POST">
-        <input type="number" name="guess" placeholder="輸入 1~100" required>
-        <br>
+        <select name="level">
+            <option value="50" {% if level==50 %}selected{% endif %}>簡單 (1~50)</option>
+            <option value="100" {% if level==100 %}selected{% endif %}>普通 (1~100)</option>
+            <option value="500" {% if level==500 %}selected{% endif %}>困難 (1~500)</option>
+        </select>
+        <button type="submit">切換難度</button>
+    </form>
+
+    <!-- 猜數字 -->
+    <form method="POST" class="box">
+        <input type="number" name="guess" placeholder="輸入數字" required>
         <button type="submit">猜！</button>
     </form>
 
-    <div class="footer">
-        Made with Flask 💻
+    <!-- 排行榜 -->
+    <div class="list">
+        🏆 最佳紀錄：
+        <ul>
+            {% for r in rank %}
+                <li>{{ r }} 次</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- 🔥 每局猜測紀錄 -->
+    <div class="list">
+        📊 歷史猜測次數：
+        <ul>
+            {% for h in history %}
+                <li>{{ h }} 次</li>
+            {% endfor %}
+        </ul>
     </div>
 
 </div>
